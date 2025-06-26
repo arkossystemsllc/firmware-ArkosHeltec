@@ -8,6 +8,8 @@
 #include "PowerFSM.h"
 #include "PowerMon.h"
 #include "ReliableRouter.h"
+#include "arkos/ArkosRouter.h"
+#include "NetworkMode.h"
 #include "airtime.h"
 #include "buzz.h"
 
@@ -733,14 +735,19 @@ void setup()
     }
 #endif
 
-    // If we're taking on the repeater role, use NextHopRouter and turn off 3V3_S rail because peripherals are not needed
+    // If we're taking on the repeater role, use NextHopRouter and disable peripherals
     if (config.device.role == meshtastic_Config_DeviceConfig_Role_REPEATER) {
         router = new NextHopRouter();
 #ifdef PIN_3V3_EN
         digitalWrite(PIN_3V3_EN, LOW);
 #endif
-    } else
-        router = new ReliableRouter();
+    } else {
+        if (currentNetworkMode == NetworkMode::ARKOS) {
+            router = new ArkosRouter();
+        } else {
+            router = new ReliableRouter();
+        }
+    }
 
     // only play start melody when role is not tracker or sensor
     if (config.power.is_power_saving == true &&
