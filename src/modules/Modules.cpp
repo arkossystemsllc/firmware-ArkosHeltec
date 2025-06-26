@@ -28,6 +28,8 @@
 #if !MESHTASTIC_EXCLUDE_DETECTIONSENSOR
 #include "modules/DetectionSensorModule.h"
 #endif
+#include "NetworkMode.h"
+#include "arkos/ArkosModules.h"
 #if !MESHTASTIC_EXCLUDE_NEIGHBORINFO
 #include "modules/NeighborInfoModule.h"
 #endif
@@ -272,4 +274,8 @@ void setupModules()
     // NOTE! This module must be added LAST because it likes to check for replies from other modules and avoid sending extra
     // acks
     routingModule = new RoutingModule();
+
+    if (currentNetworkMode == NetworkMode::ARKOS) {
+        setupArkosModules();
+    }
 }
