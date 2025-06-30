@@ -34,6 +34,7 @@ enum MenuAction {
     TOGGLE_BATTERY_ICON,
     TOGGLE_NOTIFICATIONS,
     TOGGLE_12H_CLOCK,
+    TOGGLE_NETWORK_MODE,
 };
 
 } // namespace NicheGraphics::InkHUD

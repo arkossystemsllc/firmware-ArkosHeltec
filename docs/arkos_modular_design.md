@@ -9,6 +9,8 @@ This repository adds an experimental architecture for switching between the defa
 
 Runtime mode selection is controlled via `currentNetworkMode` (see `NetworkMode.h`).  Modules and routing are instantiated based on this variable so that a device can switch modes without reflashing.
 
+The firmware now persists this mode in `/prefs/network_mode`.  You can toggle between Meshtastic and Arkos meshes from the System `Options` menu or by triple-pressing the user button.  The device reboots after changing modes so the appropriate modules are reloaded.
+
 ## Extensible Modules
 
 - `ArkosRouter` derives from `ReliableRouter` and is the place for Arkos specific routing logic.

@@ -728,6 +728,7 @@ void setup()
     // We do this as early as possible because this loads preferences from flash
     // but we need to do this after main cpu init (esp32setup), because we need the random seed set
     nodeDB = new NodeDB;
+    loadNetworkMode();
 
 #if HAS_TFT
     if (config.display.displaymode == meshtastic_Config_DisplayConfig_DisplayMode_COLOR) {
@@ -1013,7 +1014,8 @@ void setup()
                 BaseType_t higherWake = 0;
                 mainDelay.interruptFromISR(&higherWake);
             },
-            INPUT_BROKER_USER_PRESS, INPUT_BROKER_SELECT, 500, INPUT_BROKER_NONE, INPUT_BROKER_SHUTDOWN);
+            INPUT_BROKER_USER_PRESS, INPUT_BROKER_SELECT, 500, INPUT_BROKER_NONE,
+            INPUT_BROKER_SHUTDOWN, 5000, INPUT_BROKER_NETWORK_TOGGLE);
     else
         UserButtonThread->initButton(
             _pinNum, BUTTON_ACTIVE_LOW, BUTTON_ACTIVE_PULLUP, pullup_sense,
@@ -1023,7 +1025,8 @@ void setup()
                 BaseType_t higherWake = 0;
                 mainDelay.interruptFromISR(&higherWake);
             },
-            INPUT_BROKER_USER_PRESS, INPUT_BROKER_SHUTDOWN, 5000, INPUT_BROKER_SEND_PING, INPUT_BROKER_GPS_TOGGLE);
+            INPUT_BROKER_USER_PRESS, INPUT_BROKER_SHUTDOWN, 5000, INPUT_BROKER_SEND_PING,
+            INPUT_BROKER_GPS_TOGGLE, 5000, INPUT_BROKER_NETWORK_TOGGLE);
 #endif
 
 #endif

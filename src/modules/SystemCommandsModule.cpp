@@ -8,6 +8,7 @@
 #include "MeshService.h"
 #include "Module.h"
 #include "NodeDB.h"
+#include "NetworkMode.h"
 #include "main.h"
 #include "modules/AdminModule.h"
 #include "modules/ExternalNotificationModule.h"
@@ -104,6 +105,18 @@ int SystemCommandsModule::handleInputEvent(const InputEvent *event)
         } else {
             IF_SCREEN(screen->showOverlayBanner("Node Info\nUpdate Sent", 3000));
         }
+        return true;
+    case INPUT_BROKER_NETWORK_TOGGLE:
+        if (currentNetworkMode == NetworkMode::ARKOS) {
+            setNetworkMode(NetworkMode::MESHTASTIC);
+            IF_SCREEN(screen->showOverlayBanner("Meshtastic Mode", 3000));
+        } else {
+            setNetworkMode(NetworkMode::ARKOS);
+            IF_SCREEN(screen->showOverlayBanner("Arkos Mode", 3000));
+        }
+        persistNetworkMode();
+        nodeDB->saveToDisk();
+        rebootAtMsec = millis() + DEFAULT_REBOOT_SECONDS * 1000;
         return true;
     // Power control
     case INPUT_BROKER_SHUTDOWN:

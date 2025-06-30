@@ -9,6 +9,7 @@
 #include "airtime.h"
 #include "main.h"
 #include "power.h"
+#include "NetworkMode.h"
 
 #if !MESHTASTIC_EXCLUDE_GPS
 #include "GPS.h"
@@ -237,6 +238,18 @@ void InkHUD::MenuApplet::execute(MenuItem item)
         nodeDB->saveToDisk(SEGMENT_CONFIG);
         break;
 
+    case TOGGLE_NETWORK_MODE:
+        if (currentNetworkMode == NetworkMode::ARKOS) {
+            setNetworkMode(NetworkMode::MESHTASTIC);
+            IF_SCREEN(screen->showOverlayBanner("Switching to Meshtastic", 3000));
+        } else {
+            setNetworkMode(NetworkMode::ARKOS);
+            IF_SCREEN(screen->showOverlayBanner("Switching to Arkos", 3000));
+        }
+        persistNetworkMode();
+        rebootAtMsec = millis() + DEFAULT_REBOOT_SECONDS * 1000;
+        break;
+
     case TOGGLE_GPS:
         gps->toggleGpsMode();
         nodeDB->saveToDisk(SEGMENT_CONFIG);
@@ -318,6 +331,9 @@ void InkHUD::MenuApplet::showPage(MenuPage page)
                                  &settings->optionalFeatures.batteryIcon));
         items.push_back(
             MenuItem("12-Hour Clock", MenuAction::TOGGLE_12H_CLOCK, MenuPage::OPTIONS, &config.display.use_12h_clock));
+        // Toggle between Meshtastic and Arkos network modes
+        const char *modeLabel = (currentNetworkMode == NetworkMode::ARKOS) ? "Use Meshtastic Mesh" : "Use Arkos Mesh";
+        items.push_back(MenuItem(modeLabel, MenuAction::TOGGLE_NETWORK_MODE, MenuPage::EXIT));
         items.push_back(MenuItem("Exit", MenuPage::EXIT));
         break;
 
